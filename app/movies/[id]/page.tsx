@@ -1,0 +1,149 @@
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import {
+  fetchMovieDetail,
+  getPosterUrl,
+  getReleaseYear,
+  formatRating,
+} from "@/lib/tmdb";
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
+import MovieCard from "@/components/MovieCard/MovieCard";
+import { Suspense } from "react";
+import SkeletonCard from "@/components/Skeleton/SkeletonCard";
+import type { Metadata } from "next";
+
+interface PageProps {
+  params: { id: string };
+}
+
+// Generate metadata for SEO + og:image — required by spec
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+    const {id} =  await params;
+  try {
+    const movie = await fetchMovieDetail(id);
+    return {
+      title: movie.title,
+      description: movie.overview,
+      openGraph: {
+        title: movie.title,
+        description: movie.overview,
+        images: movie.backdrop_path
+          ? [{ url: getPosterUrl(movie.backdrop_path, "w780"), width: 780 }]
+          : [],
+      },
+    };
+  } catch {
+    return { title: "Movie Not Found" };
+  }
+}
+
+export default async function MovieDetailPage({ params }: PageProps) {
+    const {id} = await params;
+  let movie;
+  try {
+    movie = await fetchMovieDetail(id);
+  } catch {
+    notFound();
+  }
+
+  const posterUrl = getPosterUrl(movie.poster_path, "w500");
+  const backdropUrl = getPosterUrl(movie.backdrop_path, "original");
+  const similarMovies = movie.similar?.results.slice(0, 4) ?? [];
+
+  return (
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Breadcrumb
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Movies", href: "/" },
+          { label: movie.title },
+        ]}
+      />
+
+      {/* Backdrop */}
+      {movie.backdrop_path && (
+        <div className="relative h-64 sm:h-80 rounded-2xl overflow-hidden mb-8">
+          <Image
+            src={backdropUrl}
+            alt={`${movie.title} backdrop`}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-transparent" />
+        </div>
+      )}
+
+      {/* Movie Info */}
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Poster */}
+        <div className="relative w-48 h-72 flex-shrink-0 rounded-xl overflow-hidden self-start">
+          <Image
+            src={posterUrl}
+            alt={`${movie.title} poster`}
+            fill
+            sizes="192px"
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        {/* Details */}
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-white mb-1">{movie.title}</h1>
+          {movie.tagline && (
+            <p className="text-yellow-400 italic mb-4">
+              &quot;{movie.tagline}&quot;
+            </p>
+          )}
+
+          <div className="flex flex-wrap gap-4 text-sm text-gray-400 mb-4">
+            <span>📅 {getReleaseYear(movie.release_date)}</span>
+            <span>⭐ {formatRating(movie.vote_average)} / 10</span>
+            {movie.runtime && <span>🕐 {movie.runtime} min</span>}
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-6">
+            {movie.genres.map((genre) => (
+              <span
+                key={genre.id}
+                className="px-3 py-1 bg-gray-800 rounded-full text-xs text-gray-300"
+              >
+                {genre.name}
+              </span>
+            ))}
+          </div>
+
+          <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
+        </div>
+      </div>
+
+      {/* Bonus B-2: Suspense boundary around slow "Similar Movies" fetch */}
+      {similarMovies.length > 0 && (
+        <section className="mt-12" aria-label="Similar movies">
+          <h2 className="text-xl font-bold text-white mb-4">
+            You Might Also Like
+          </h2>
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
+              </div>
+            }
+          >
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {similarMovies.map((m) => (
+                <MovieCard key={m.id} movie={m} />
+              ))}
+            </div>
+          </Suspense>
+        </section>
+      )}
+    </main>
+  );
+}
