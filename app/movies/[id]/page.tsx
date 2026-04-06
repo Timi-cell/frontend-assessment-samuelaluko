@@ -4,6 +4,7 @@ import {
   getPosterUrl,
   getReleaseYear,
   formatRating,
+  formatRuntime,
 } from "@/lib/tmdb";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import MovieCard from "@/components/MovieCard/MovieCard";
@@ -126,7 +127,7 @@ export default async function MovieDetailPage({
             {movie.runtime && (
               <span className="flex items-center gap-2">
                 <Clock width={15} height={15} color="black" fill="white" />
-                {movie.runtime} min
+                {formatRuntime(movie.runtime)}
               </span>
             )}
           </div>

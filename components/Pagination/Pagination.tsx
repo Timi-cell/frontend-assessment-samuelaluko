@@ -1,5 +1,6 @@
 "use client";
 
+import { clamp } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface PaginationProps {
@@ -20,7 +21,7 @@ export default function Pagination({
     router.push(`?${params.toString()}`);
   };
 
-  const capped = Math.min(totalPages, 500); 
+  const capped = clamp(totalPages, 1, 500);
 
   return (
     <div

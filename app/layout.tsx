@@ -25,6 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
+      <head>
+        <meta name="color-scheme" content="dark" />
+      </head>
       <body
         className={`min-h-screen bg-gray-950 text-gray-50 ${inter.className}`}
       >

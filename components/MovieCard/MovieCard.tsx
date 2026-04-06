@@ -5,6 +5,7 @@ import { getPosterUrl, getReleaseYear, formatRating } from "@/lib/tmdb";
 import type { Movie } from "@/types/tmdb";
 import { useSearchParams } from "next/navigation";
 import { Star } from "lucide-react";
+import { formatNumber } from "@/lib/utils";
 
 interface MovieCardProps {
   movie: Movie;
@@ -51,7 +52,7 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
         </h2>
         <p className="text-xs text-gray-300">{year}</p>
         <p className="text-xs text-gray-400 mt-0.5">
-          {movie.vote_count.toLocaleString()} votes
+          {formatNumber(movie.vote_count)} votes
         </p>
       </div>
     </Link>

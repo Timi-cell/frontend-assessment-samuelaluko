@@ -1,4 +1,4 @@
-// src/lib/tmdb.ts
+export {getReleaseYear, formatRating, formatRuntime} from "@/lib/utils";
 
 import type { Genre, MovieDetail, TMDBListResponse } from "@/types/tmdb";
 
@@ -87,12 +87,3 @@ export function getPosterUrl(
   return `${IMAGE_BASE}/${size}${path}`;
 }
 
-// Format release year
-export function getReleaseYear(dateStr: string): string {
-  return dateStr ? dateStr.split("-")[0]! : "Unknown";
-}
-
-// Format rating
-export function formatRating(rating: number): string {
-  return rating.toFixed(1);
-}

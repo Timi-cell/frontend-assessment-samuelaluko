@@ -14,6 +14,7 @@ import type { SearchParams } from "@/types/tmdb";
 import { Clapperboard } from "lucide-react";
 import Link from "next/link";
 import FilterPanel from "@/components/FilterPanel/FilterPanel";
+import { formatNumber } from "@/lib/utils";
 
 interface PageProps {
   searchParams: Promise<SearchParams>;
@@ -57,7 +58,7 @@ export default async function HomePage({ searchParams }: PageProps) {
       </div>
 
       {/* Search + Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4 w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row gap-3 mb-4 w-full">
         <Suspense
           fallback={
             <div className="h-10 flex-1 bg-gray-800 rounded-xl animate-pulse" />
@@ -81,7 +82,7 @@ export default async function HomePage({ searchParams }: PageProps) {
         <>
           <p className="text-sm text-gray-300 mb-4">
             Under {genreName}, Movie Explorer has{" "}
-            {moviesData.total_results.toLocaleString()} movies for you.
+            {formatNumber(moviesData.total_results)} movies for you.
             {/* {query && ` for "${query}"`} */}
           </p>
 
