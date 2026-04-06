@@ -11,9 +11,9 @@ import Pagination from "@/components/Pagination/Pagination";
 import EmptyState from "@/components/EmptyState/EmptyState";
 // import SkeletonCard from "@/components/Skeleton/SkeletonCard";
 import type { SearchParams } from "@/types/tmdb";
-import FilterPanelClient from "@/components/FilterPanel/FilterPanelClient";
 import { Clapperboard } from "lucide-react";
 import Link from "next/link";
+import FilterPanel from "@/components/FilterPanel/FilterPanel";
 
 interface PageProps {
   searchParams: Promise<SearchParams>;
@@ -70,7 +70,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             <div className="h-10 w-40 bg-gray-800 rounded-xl animate-pulse" />
           }
         >
-          <FilterPanelClient genres={genres} />
+          <FilterPanel genres={genres} />
         </Suspense>
       </div>
 
@@ -82,7 +82,7 @@ export default async function HomePage({ searchParams }: PageProps) {
           <p className="text-sm text-gray-300 mb-4">
             Under {genreName}, Movie Explorer has{" "}
             {moviesData.total_results.toLocaleString()} movies for you.
-            {query && ` for "${query}"`}
+            {/* {query && ` for "${query}"`} */}
           </p>
 
           {/* Responsive Grid */}

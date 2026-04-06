@@ -50,7 +50,7 @@ export default async function MovieDetailPage({
   const { id } = await params;
   const sParams = await searchParams;
 
-  const queryString = new URLSearchParams(sParams as any).toString();
+  const queryString = new URLSearchParams(sParams as Record<string, string>).toString();
   const backToMoviesUrl = queryString ? `/?${queryString}` : "/";
 
   let movie;

@@ -11,4 +11,4 @@ directory = ".open-next/assets"
 binding = "ASSETS"
 
 [vars]
-NEXT_PUBLIC_BASE_URL = "https://movie-explorer.workers.dev"
+NEXT_BASE_URL = "https://movie-explorer.alukosamuel25.workers.dev"
