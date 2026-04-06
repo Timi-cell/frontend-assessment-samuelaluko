@@ -11,8 +11,8 @@ export default function Loading() {
         <div className="h-10 flex-1 bg-gray-800 rounded-xl animate-pulse" />
         <div className="h-10 w-40 bg-gray-800 rounded-xl animate-pulse" />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {Array.from({ length: 20 }).map((_, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+        {Array.from({ length: 21 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
       </div>

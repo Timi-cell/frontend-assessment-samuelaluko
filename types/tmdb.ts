@@ -15,10 +15,10 @@ export interface MovieDetail extends Movie {
   genres: Genre[];
   runtime: number | null;
   tagline: string;
-  status: string;
-  budget: number;
-  revenue: number;
-  production_companies: ProductionCompany[];
+  // status: string;
+  // budget: number;
+  // revenue: number;
+  // production_companies: ProductionCompany[];
   similar?: { results: Movie[] };
 }
 
@@ -27,11 +27,11 @@ export interface Genre {
   name: string;
 }
 
-export interface ProductionCompany {
-  id: number;
-  name: string;
-  logo_path: string | null;
-}
+// export interface ProductionCompany {
+//   id: number;
+//   name: string;
+//   logo_path: string | null;
+// }
 
 export interface TMDBListResponse {
   page: number;
@@ -41,7 +41,7 @@ export interface TMDBListResponse {
 }
 
 export interface SearchParams {
-  query?: string;
+  q?: string;
   genre?: string;
   page?: string;
 }

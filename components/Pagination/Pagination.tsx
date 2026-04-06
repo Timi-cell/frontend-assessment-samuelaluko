@@ -20,7 +20,7 @@ export default function Pagination({
     router.push(`?${params.toString()}`);
   };
 
-  const capped = Math.min(totalPages, 500); // TMDB caps at 500
+  const capped = Math.min(totalPages, 500); 
 
   return (
     <div

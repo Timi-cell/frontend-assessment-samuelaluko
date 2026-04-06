@@ -35,6 +35,6 @@ describe("MovieCard", () => {
   it("links to the correct movie detail page", () => {
     render(<MovieCard movie={mockMovie} />);
     const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", "/movies/1");
+    expect(link).toHaveAttribute("href", "/movies/1?");
   });
 });

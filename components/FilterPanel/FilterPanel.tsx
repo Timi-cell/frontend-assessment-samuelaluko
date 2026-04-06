@@ -30,7 +30,7 @@ export default function FilterPanel({ genres }: FilterPanelProps) {
         htmlFor="genre-filter"
         className="text-sm text-gray-400 whitespace-nowrap"
       >
-        Genre:
+        Filter By Genre:
       </label>
       <select
         id="genre-filter"

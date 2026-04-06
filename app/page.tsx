@@ -9,25 +9,21 @@ import MovieCard from "@/components/MovieCard/MovieCard";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Pagination from "@/components/Pagination/Pagination";
 import EmptyState from "@/components/EmptyState/EmptyState";
-import SkeletonCard from "@/components/Skeleton/SkeletonCard";
+// import SkeletonCard from "@/components/Skeleton/SkeletonCard";
 import type { SearchParams } from "@/types/tmdb";
-import type { Metadata } from "next";
 import FilterPanelClient from "@/components/FilterPanel/FilterPanelClient";
-
-
-export const metadata: Metadata = {
-  title: "Discover Movies",
-  description: "Browse and search thousands of movies from TMDB.",
-};
+import { Clapperboard } from "lucide-react";
+import Link from "next/link";
 
 interface PageProps {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }
 
 export default async function HomePage({ searchParams }: PageProps) {
-  const page = Number(searchParams.page ?? 1);
-  const query = searchParams.query ?? "";
-  const genre = searchParams.genre ?? "";
+  const resolvedParams = await searchParams;
+  const page = Number(resolvedParams.page ?? 1);
+  const query = resolvedParams.q ?? "";
+  const genre = resolvedParams.genre ?? "";
 
   // Server-side data fetching — fetch genres for filter panel in parallel
   const [moviesData, genres] = await Promise.all([
@@ -39,20 +35,29 @@ export default async function HomePage({ searchParams }: PageProps) {
     fetchGenres(),
   ]);
 
+  // Find the genre object that matches the ID in the URL
+  const activeGenre = genres.find((g) => String(g.id) === String(genre));
+
+  const genreName = activeGenre ? activeGenre.name : "All Genres";
+
   const movies = moviesData.results;
   const totalPages = moviesData.total_pages;
-  const activeQuery = query || genre;
+  // const activeQuery = query || genre;
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">🎬 CineExplorer</h1>
-        <p className="text-gray-400">Discover your next favourite movie</p>
+        <Link href={"/"}>
+          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+            <Clapperboard width={50} height={50} color="blue" /> Movie Explorer
+          </h1>
+        </Link>
+        <p className="text-gray-400">Discover your next favourite movie...</p>
       </div>
 
-      {/* Search + Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-8">
+      {/* Search + Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <Suspense
           fallback={
             <div className="h-10 flex-1 bg-gray-800 rounded-xl animate-pulse" />
@@ -75,7 +80,8 @@ export default async function HomePage({ searchParams }: PageProps) {
       ) : (
         <>
           <p className="text-sm text-gray-500 mb-4">
-            {moviesData.total_results.toLocaleString()} results
+            Under {genreName}, Movie Explorer has{" "}
+            {moviesData.total_results.toLocaleString()} movies for you.
             {query && ` for "${query}"`}
           </p>
 

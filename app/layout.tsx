@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | Movie Explorer",
     default: "Movie Explorer",
   },
-  description: "Browse, search and explore thousands of movies.",
+  description: "Browse and search thousands of movies.",
   metadataBase: new URL(process.env.NEXT_BASE_URL ?? "http://localhost:3000"),
 };
 

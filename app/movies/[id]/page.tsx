@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import {
   fetchMovieDetail,
   getPosterUrl,
@@ -11,18 +10,23 @@ import MovieCard from "@/components/MovieCard/MovieCard";
 import { Suspense } from "react";
 import SkeletonCard from "@/components/Skeleton/SkeletonCard";
 import type { Metadata } from "next";
+import NotFound from "@/app/not-found";
+import { CalendarDays, Clock, Star } from "lucide-react";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Generate metadata for SEO + og:image — required by spec
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-    const {id} =  await params;
+  const { id } = await params;
   try {
     const movie = await fetchMovieDetail(id);
+    console.log(movie);
+
     return {
       title: movie.title,
       description: movie.overview,
@@ -39,25 +43,35 @@ export async function generateMetadata({
   }
 }
 
-export default async function MovieDetailPage({ params }: PageProps) {
-    const {id} = await params;
+export default async function MovieDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
+  const { id } = await params;
+  const sParams = await searchParams;
+
+  const queryString = new URLSearchParams(sParams as any).toString();
+  const backToMoviesUrl = queryString ? `/?${queryString}` : "/";
+
   let movie;
   try {
     movie = await fetchMovieDetail(id);
   } catch {
-    notFound();
+    return <NotFound />;
   }
 
   const posterUrl = getPosterUrl(movie.poster_path, "w500");
   const backdropUrl = getPosterUrl(movie.backdrop_path, "original");
   const similarMovies = movie.similar?.results.slice(0, 4) ?? [];
-
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Breadcrumb
         crumbs={[
           { label: "Home", href: "/" },
-          { label: "Movies", href: "/" },
+          {
+            label: "Back to Movies",
+            href: backToMoviesUrl,
+          },
           { label: movie.title },
         ]}
       />
@@ -73,20 +87,20 @@ export default async function MovieDetailPage({ params }: PageProps) {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-gray-950 via-gray-950/50 to-transparent" />
         </div>
       )}
 
       {/* Movie Info */}
       <div className="flex flex-col md:flex-row gap-8">
         {/* Poster */}
-        <div className="relative w-48 h-72 flex-shrink-0 rounded-xl overflow-hidden self-start">
+        <div className="relative w-48 h-72 shrink-0 rounded-xl overflow-hidden self-start">
           <Image
             src={posterUrl}
             alt={`${movie.title} poster`}
             fill
             sizes="192px"
-            className="object-cover"
+            className="object-cover w-full"
             priority
           />
         </div>
@@ -101,9 +115,20 @@ export default async function MovieDetailPage({ params }: PageProps) {
           )}
 
           <div className="flex flex-wrap gap-4 text-sm text-gray-400 mb-4">
-            <span>📅 {getReleaseYear(movie.release_date)}</span>
-            <span>⭐ {formatRating(movie.vote_average)} / 10</span>
-            {movie.runtime && <span>🕐 {movie.runtime} min</span>}
+            <span className="flex items-center gap-2">
+              <CalendarDays width={15} height={15} color="blue" />
+              {getReleaseYear(movie.release_date)}
+            </span>
+            <span className="flex items-center gap-2">
+              <Star width={15} height={15} color="yellow" fill="yellow" />{" "}
+              {formatRating(movie.vote_average)} / 10
+            </span>
+            {movie.runtime && (
+              <span className="flex items-center gap-2">
+                <Clock width={15} height={15} color="black" fill="white" />
+                {movie.runtime} min
+              </span>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-2 mb-6">

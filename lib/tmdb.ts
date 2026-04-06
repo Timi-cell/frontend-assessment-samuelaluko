@@ -1,19 +1,22 @@
 // src/lib/tmdb.ts
 
 import type { Genre, MovieDetail, TMDBListResponse } from "@/types/tmdb";
+import { get } from "http";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 export const IMAGE_BASE = "https://image.tmdb.org/t/p";
 
-const headers = {
-  Authorization: `Bearer ${process.env.TMDB_READ_ACCESS_TOKEN}`,
-  "Content-Type": "application/json",
-};
+function getHeaders() {
+  return {
+    Authorization: `Bearer ${process.env.TMDB_READ_ACCESS_TOKEN}`,
+    "Content-Type": "application/json",
+  };
+}
 
 // Listing page — ISR: fresh every hour, cached between requests
 export async function fetchPopularMovies(page = 1): Promise<TMDBListResponse> {
   const res = await fetch(`${BASE_URL}/movie/popular?page=${page}`, {
-    headers,
+    headers: getHeaders(),
     next: { revalidate: 3600 }, // ISR: revalidate every 1 hour
   });
   if (!res.ok) throw new Error(`Failed to fetch movies: ${res.status}`);
@@ -25,7 +28,7 @@ export async function fetchMovieDetail(id: string): Promise<MovieDetail> {
   const res = await fetch(
     `${BASE_URL}/movie/${id}?append_to_response=similar`,
     {
-      headers,
+      headers: getHeaders(),
       next: { revalidate: 86400 }, // 24 hours — detail data is very stable
     },
   );
@@ -41,7 +44,7 @@ export async function searchMovies(
   const res = await fetch(
     `${BASE_URL}/search/movie?query=${encodeURIComponent(query)}&page=${page}`,
     {
-      headers,
+      headers: getHeaders(),
       cache: "no-store", // Search must never be stale
     },
   );
@@ -52,7 +55,7 @@ export async function searchMovies(
 // Genres — force-cache: genre list essentially never changes
 export async function fetchGenres(): Promise<Genre[]> {
   const res = await fetch(`${BASE_URL}/genre/movie/list`, {
-    headers,
+    headers: getHeaders(),
     next: { revalidate: 86400 },
   });
   if (!res.ok) throw new Error("Failed to fetch genres");
@@ -68,7 +71,7 @@ export async function fetchMoviesByGenre(
   const res = await fetch(
     `${BASE_URL}/discover/movie?with_genres=${genreId}&page=${page}`,
     {
-      headers,
+      headers: getHeaders(),
       next: { revalidate: 3600 },
     },
   );
@@ -81,7 +84,7 @@ export function getPosterUrl(
   path: string | null,
   size: "w342" | "w500" | "w780" | "original" = "w500",
 ): string {
-  if (!path) return "/next.svg"; 
+  if (!path) return "/next.svg";
   return `${IMAGE_BASE}/${size}${path}`;
 }
 
