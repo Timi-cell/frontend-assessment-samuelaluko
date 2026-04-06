@@ -12,7 +12,7 @@ import { Suspense } from "react";
 import SkeletonCard from "@/components/Skeleton/SkeletonCard";
 import type { Metadata } from "next";
 import NotFound from "@/app/not-found";
-import { CalendarDays, Clock, Star } from "lucide-react";
+import { CalendarDays, Clapperboard, Clock, Star } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -51,7 +51,9 @@ export default async function MovieDetailPage({
   const { id } = await params;
   const sParams = await searchParams;
 
-  const queryString = new URLSearchParams(sParams as Record<string, string>).toString();
+  const queryString = new URLSearchParams(
+    sParams as Record<string, string>,
+  ).toString();
   const backToMoviesUrl = queryString ? `/?${queryString}` : "/";
 
   let movie;
@@ -96,14 +98,25 @@ export default async function MovieDetailPage({
       <div className="flex flex-col md:flex-row gap-8">
         {/* Poster */}
         <div className="relative w-48 h-72 shrink-0 rounded-xl overflow-hidden self-start">
-          <Image
-            src={posterUrl}
-            alt={`${movie.title} poster`}
-            fill
-            sizes="192px"
-            className="object-cover w-full"
-            priority
-          />
+          {!movie.poster_path ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-800 text-gray-600">
+              <span className="text-5xl mb-8">
+                <Clapperboard width={100} height={100} color="blue" />
+              </span>
+              <span className="text-base sm:text-sm text-center px-2 text-gray-500 line-clamp-2">
+                No image for {`"${movie.title}"`}
+              </span>
+            </div>
+          ) : (
+            <Image
+              src={posterUrl}
+              alt={`${movie.title} poster`}
+              fill
+              sizes="192px"
+              className="object-cover w-full"
+              priority
+            />
+          )}
         </div>
 
         {/* Details */}

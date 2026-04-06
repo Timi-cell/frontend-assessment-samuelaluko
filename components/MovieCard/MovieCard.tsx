@@ -4,8 +4,9 @@ import Link from "next/link";
 import { getPosterUrl, getReleaseYear, formatRating } from "@/lib/tmdb";
 import type { Movie } from "@/types/tmdb";
 import { useSearchParams } from "next/navigation";
-import { Star } from "lucide-react";
+import { Clapperboard, Star } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
+import { useState } from "react";
 
 interface MovieCardProps {
   movie: Movie;
@@ -13,6 +14,7 @@ interface MovieCardProps {
 }
 
 export default function MovieCard({ movie, priority = false }: MovieCardProps) {
+  const [imgError, setImgError] = useState(false);
   const posterUrl = getPosterUrl(movie.poster_path, "w342");
   const year = getReleaseYear(movie.release_date);
   const rating = formatRating(movie.vote_average);
@@ -26,16 +28,28 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
     >
       {/* Poster */}
       <div className="relative aspect-2/3 w-full  overflow-hidden">
-        <Image
-          src={posterUrl}
-          alt={`${movie.title} poster`}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-          priority={priority}
-          placeholder="blur"
-          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQyIiBoZWlnaHQ9IjUxMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWYyOTM3Ii8+PC9zdmc+"
-        />
+        {imgError || !movie.poster_path ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-800 text-gray-600">
+            <span className="text-5xl mb-8">
+              <Clapperboard width={100} height={100} color="blue" />
+            </span>
+            <span className="text-base sm:text-sm text-center px-2 text-gray-500 line-clamp-2">
+              No image for {`"${movie.title}"`}
+            </span>
+          </div>
+        ) : (
+          <Image
+            src={posterUrl}
+            alt={`${movie.title} poster`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            priority={priority}
+            onError={() => setImgError(true)}
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQyIiBoZWlnaHQ9IjUxMyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWYyOTM3Ii8+PC9zdmc+"
+          />
+        )}
         {/* Rating badge */}
         <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-yellow-400 text-xs font-bold px-2 py-1 rounded-md flex items-center gap-2">
           <span aria-hidden="true">
