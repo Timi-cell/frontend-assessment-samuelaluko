@@ -57,7 +57,7 @@ export default async function HomePage({ searchParams }: PageProps) {
       </div>
 
       {/* Search + Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 mb-4 w-full overflow-hidden">
         <Suspense
           fallback={
             <div className="h-10 flex-1 bg-gray-800 rounded-xl animate-pulse" />

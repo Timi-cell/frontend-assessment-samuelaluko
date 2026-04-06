@@ -1,16 +1,19 @@
-# CineExplorer — Checkit Frontend Assessment
+# Movie Explorer — Checkit Frontend Assessment
 
-> A production-quality Content Explorer app built with Next.js 15, 
-> TypeScript, Tailwind CSS, and deployed to Cloudflare Workers.
+> A production-quality custom Content Explorer app built with Next.js 16, 
+> TypeScript, Tailwind CSS, and deployed to Vercel.
 
 ## Live URL
-https://your-app-name.workers.dev
+https://movie-explorer-assessment.vercel.app
 
 ## Setup (5 commands)
-
-npx create-next-app@latest content-explorer-app \
-touch .env.local .env.example (in bash)
+```bash
+git clone https://github.com/Timi-cell/movieexplorerassessment
+cd movieexplorerassessment
+npm install
+cp .env.example .env.local
 npm run dev
+```
 
 Open http://localhost:3000
 
@@ -55,7 +58,7 @@ testable, cacheable, and swappable.
 | Movie detail page | `revalidate: 86400` | Movie metadata is essentially immutable |
 | Search results | `cache: "no-store"` | Must always reflect real-time data |
 | Genre list | `revalidate: 86400` | Genre taxonomy never changes |
-| Discover (genre/rating) | `revalidate: 3600` | Filter results are stable within an hour |
+| Discover (genre) | `revalidate: 3600` | Filter results are stable within an hour |
 
 ### Pagination over Infinite Scroll
 Pagination was chosen because:
@@ -98,7 +101,6 @@ MUI, Chakra, or any other component library — per the assessment spec.
 | `cache: "no-store"` | `searchMovies` | Guarantees fresh search results always |
 | `Cache-Control: immutable` | `next.config.js` headers | Cloudflare caches static assets for 1 year |
 | `images.unoptimized: true` | `next.config.js` | Workers runtime lacks Node.js Sharp — TMDB CDN handles optimisation at source |
-| `vote_count.gte: 100` | `discoverMovies` | Filters out obscure low-vote films from discovery results |
 
 ---
 
@@ -109,46 +111,25 @@ MUI, Chakra, or any other component library — per the assessment spec.
 - **Search + genre filter** — Genre is applied client-side when a query 
   is active. Results may show fewer than 20 items per page when 
   filtered this way
-- **Image optimization disabled** — Cloudflare Workers runtime does 
-  not support the Node.js Sharp module Next.js uses for image 
-  processing. TMDB images are already CDN-optimised at source via 
-  `image.tmdb.org`. With more time I would configure a Cloudflare 
-  Image Resizing worker as a replacement
 - **Dynamic imports removed** — `dynamic()` with `ssr: false` caused 
   a chunk loading incompatibility with the Cloudflare Workers runtime. 
-  FilterPanel is imported statically instead. With more time I would 
-  investigate OpenNext's recommended code-splitting patterns for Workers
+  FilterPanel is imported statically instead. I ended up using Vercel though but I wanted to mention this too.
 - **Search and genre filters are mutually exclusive** — selecting a 
   genre clears the search query and vice versa. A more complex 
   implementation would allow combining both simultaneously
 
 ### What I Would Do With 2 More Hours
 - Add optimistic UI for pagination transitions
-- Add E2E tests with Playwright for the search and filter flows
-- Investigate Cloudflare Image Resizing as a replacement for 
-  next/image optimization
+- Investigate Cloudflare Image Resizing as a drop-in replacement for 
+  next/image optimization at the edge
 - Add a "Back to top" button on the listing page for long scroll sessions
-- Implement proper OpenNext-compatible code splitting for FilterPanel
+- Implement combined search + genre + rating filtering simultaneously
 
 ---
 
 ## Bonus Tasks
 
-### B-1 — Cloudflare Workers Edge Caching (+4 pts)
-
-Listing page responses include a `Cache-Control` header set via 
-`src/middleware.ts`:
-OpenNext maps Next.js `revalidate: 3600` to Cloudflare's Cache API 
-TTL. On a cache MISS the Worker fetches from origin and stores the 
-response. On a HIT it serves from the edge with zero origin latency.
-
-**Verify with curl:**
-```bash
-curl -I https://movie-explorer.workers.dev/
-# Look for: x-cache-status header
-```
-
-### B-2 — React 18 Streaming with Suspense (+3 pts)
+### React 18 Streaming with Suspense (+3 pts)
 
 The "You Might Also Like" section on every movie detail page 
 (`/movies/[id]`) is wrapped in a `<Suspense>` boundary with a 
@@ -159,7 +140,7 @@ immediately while this section loads independently.
 **Verify:** Visit any movie detail page and observe the similar movies 
 section loading after the main content.
 
-### B-3 — Accessibility Audit (+3 pts)
+### Accessibility Audit (+3 pts)
 
 **Tool:** Chrome Lighthouse (built-in DevTools)  
 **Score:** 100 / 100 (Desktop), 100 / 100 (Mobile)
@@ -197,16 +178,18 @@ Two components tested with 100% coverage:
 
 ---
 
+## Live URL
+https://movie-explorer-assessment.vercel.app
+
 ## Deployment
 
-Deployed to **Cloudflare Workers** via the OpenNext adapter 
-(`@opennextjs/cloudflare`).
-```bash
-npx opennextjs-cloudflare build
-npx wrangler deploy
-```
+Deployed to **Vercel** instead of Cloudflare Workers.
 
-Cloudflare Workers was chosen over Vercel as it matches the 
-assessment's preferred hosting and demonstrates awareness of 
-edge runtime constraints (no Node.js Sharp, no `ssr: false` 
-dynamic imports).
+**Reason:** The OpenNext Cloudflare adapter has a known incompatibility 
+with Windows development environments that caused persistent 
+`ChunkLoadError` failures at runtime despite a successful build. 
+The issue stems from how OpenNext resolves SSR chunks on the Workers 
+runtime when built on Windows paths. Vercel natively supports Next.js 
+with zero configuration and is fully cross-platform. In a Linux/Mac 
+or CI/CD environment, Cloudflare Workers via OpenNext would be the 
+correct production choice as it matches an edge-first architecture. The performance characteristics (ISR, CDN caching, streaming) are equivalent on both platforms.
