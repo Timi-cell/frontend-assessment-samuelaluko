@@ -99,7 +99,6 @@ MUI, Chakra, or any other component library — per the assessment spec.
 | `next/font` (Inter) | `app/layout.tsx` | Eliminates layout shift from font swap (CLS = 0) |
 | ISR `revalidate: 3600` | `fetchPopularMovies` | Static-speed serving with hourly freshness |
 | `cache: "no-store"` | `searchMovies` | Guarantees fresh search results always |
-| `Cache-Control: immutable` | `next.config.js` headers | Cloudflare caches static assets for 1 year |
 | `images.unoptimized: true` | `next.config.js` | Workers runtime lacks Node.js Sharp — TMDB CDN handles optimisation at source |
 
 ---
@@ -129,7 +128,20 @@ MUI, Chakra, or any other component library — per the assessment spec.
 
 ## Bonus Tasks
 
-### React 18 Streaming with Suspense (+3 pts)
+### Edge Caching
+
+Full Cloudflare Workers edge caching via `caches.default` and the 
+OpenNext adapter was blocked by a Windows-specific chunk resolution 
+bug in the Workers runtime. As a partial implementation, Vercel's 
+CDN caching is configured via `Cache-Control: s-maxage=3600, 
+stale-while-revalidate=86400` on listing page responses, and all 
+static assets are cached immutably for 1 year. The ISR revalidation 
+strategy maps directly to what OpenNext would configure on Workers.
+
+**Verify:**
+curl -I https://movie-explorer-assessment.vercel.app/
+
+### React 18 Streaming with Suspense
 
 The "You Might Also Like" section on every movie detail page 
 (`/movies/[id]`) is wrapped in a `<Suspense>` boundary with a 
@@ -140,7 +152,7 @@ immediately while this section loads independently.
 **Verify:** Visit any movie detail page and observe the similar movies 
 section loading after the main content.
 
-### Accessibility Audit (+3 pts)
+### Accessibility Audit
 
 **Tool:** Chrome Lighthouse (built-in DevTools)  
 **Score:** 100 / 100 (Desktop), 100 / 100 (Mobile)

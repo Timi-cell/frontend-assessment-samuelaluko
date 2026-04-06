@@ -9,8 +9,6 @@
     "lint": "eslint",
     "test": "vitest",
     "test:run": "vitest run",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy",
-    "preview": "opennextjs-cloudflare build && wrangler dev",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {

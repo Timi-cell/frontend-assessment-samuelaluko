@@ -12,18 +12,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Cloudflare Cache-Control headers for static assets as required
   async headers() {
     return [
       {
-        source: "/_next/static/(.*)",
-        headers: [
+        source:"/",
+        headers:[
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
+            value: "public, s-maxage=3600, stale-while-revalidate=86400",
+          }
+        ]
+      }
     ];
   },
 };
