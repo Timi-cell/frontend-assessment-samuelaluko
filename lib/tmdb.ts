@@ -81,7 +81,7 @@ export async function fetchMoviesByGenre(
 // Poster URL helper
 export function getPosterUrl(
   path: string | null,
-  size: "w342" | "w500" | "w780" | "original" = "w500",
+  size: "w342" | "w500" | "w780" | "original" = "w342",
 ): string {
   if (!path) return "/next.svg";
   return `${IMAGE_BASE}/${size}${path}`;

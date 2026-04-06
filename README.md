@@ -6,16 +6,16 @@
 ## Live URL
 https://movie-explorer-assessment.vercel.app
 
-## Setup (5 commands)
+## Setup
 ```bash
-git clone https://github.com/Timi-cell/movieexplorerassessment
-cd movieexplorerassessment
+git clone https://github.com/Timi-cell/frontend-assessment-samuelaluko
+cd frontend-assessment-samuelaluko
 npm install
 cp .env.example .env.local
 npm run dev
 ```
 
-Open http://localhost:3000
+Open at http://localhost:3000
 
 ## Environment Variables
 
@@ -130,16 +130,41 @@ MUI, Chakra, or any other component library — per the assessment spec.
 
 ### Edge Caching
 
-Full Cloudflare Workers edge caching via `caches.default` and the 
-OpenNext adapter was blocked by a Windows-specific chunk resolution 
-bug in the Workers runtime. As a partial implementation, Vercel's 
-CDN caching is configured via `Cache-Control: s-maxage=3600, 
-stale-while-revalidate=86400` on listing page responses, and all 
-static assets are cached immutably for 1 year. The ISR revalidation 
-strategy maps directly to what OpenNext would configure on Workers.
+Full Cloudflare Workers edge caching via `caches.default` was blocked 
+by a Windows-specific OpenNext incompatibility. On Vercel, ISR caching 
+is configured via `revalidate: 3600` in the data fetching layer — 
+Vercel's CDN automatically caches ISR pages and serves them from the 
+edge on cache hits. Static assets are cached immutably for 1 year via 
+`Cache-Control: public, max-age=31536000, immutable`.
+
+Note: Vercel overrides custom Cache-Control headers on HTML responses 
+and manages page caching internally — this is a platform constraint, 
+not a code issue.
 
 **Verify:**
+```bash
 curl -I https://movie-explorer-assessment.vercel.app/
+```
+### B-1 — Edge Caching (Partial)
+
+Full Cloudflare Workers edge caching via `caches.default` was blocked 
+by a Windows-specific OpenNext incompatibility. On Vercel, ISR caching 
+is configured via `revalidate: 3600` in the data fetching layer — 
+Vercel's CDN automatically caches ISR pages and serves them from the 
+edge on cache hits. Static assets are cached immutably for 1 year via 
+`Cache-Control: public, max-age=31536000, immutable`.
+
+Note: Vercel overrides custom Cache-Control headers on HTML responses 
+and manages page caching internally — found this to be a platform constraint, 
+not a code issue.
+
+**Verify:**
+```bash
+curl -I https://movie-explorer-assessment.vercel.app/
+# X-Vercel-Cache: HIT on subsequent requests confirms edge caching
+```
+# X-Vercel-Cache: MISS on first hit per edge node (expected)
+# X-Vercel-Cache: HIT wasn't gotten on subsequent requests
 
 ### React 18 Streaming with Suspense
 
@@ -204,4 +229,4 @@ The issue stems from how OpenNext resolves SSR chunks on the Workers
 runtime when built on Windows paths. Vercel natively supports Next.js 
 with zero configuration and is fully cross-platform. In a Linux/Mac 
 or CI/CD environment, Cloudflare Workers via OpenNext would be the 
-correct production choice as it matches an edge-first architecture. The performance characteristics (ISR, CDN caching, streaming) are equivalent on both platforms.
+correct production choice as it matches an edge-first architecture.

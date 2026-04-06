@@ -61,7 +61,7 @@ export default async function MovieDetailPage({
     return <NotFound />;
   }
 
-  const posterUrl = getPosterUrl(movie.poster_path, "w500");
+  const posterUrl = getPosterUrl(movie.poster_path, "w342");
   const backdropUrl = getPosterUrl(movie.backdrop_path, "original");
   const similarMovies = movie.similar?.results.slice(0, 4) ?? [];
   return (
