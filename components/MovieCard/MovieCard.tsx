@@ -16,7 +16,7 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
   const year = getReleaseYear(movie.release_date);
   const rating = formatRating(movie.vote_average);
   const searchParams = useSearchParams()?.toString() || "";
-  
+
   return (
     <Link
       href={`/movies/${movie.id}?${searchParams}`}
@@ -49,8 +49,8 @@ export default function MovieCard({ movie, priority = false }: MovieCardProps) {
         <h2 className="font-semibold text-sm text-white line-clamp-2 leading-snug mb-1">
           {movie.title}
         </h2>
-        <p className="text-xs text-gray-400">{year}</p>
-        <p className="text-xs text-gray-500 mt-0.5">
+        <p className="text-xs text-gray-300">{year}</p>
+        <p className="text-xs text-gray-400 mt-0.5">
           {movie.vote_count.toLocaleString()} votes
         </p>
       </div>

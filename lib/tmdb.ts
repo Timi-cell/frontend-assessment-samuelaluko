@@ -1,7 +1,6 @@
 // src/lib/tmdb.ts
 
 import type { Genre, MovieDetail, TMDBListResponse } from "@/types/tmdb";
-import { get } from "http";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 export const IMAGE_BASE = "https://image.tmdb.org/t/p";
@@ -29,7 +28,7 @@ export async function fetchMovieDetail(id: string): Promise<MovieDetail> {
     `${BASE_URL}/movie/${id}?append_to_response=similar`,
     {
       headers: getHeaders(),
-      next: { revalidate: 86400 }, // 24 hours — detail data is very stable
+      next: { revalidate: 86400 }, 
     },
   );
   if (!res.ok) throw new Error(`Failed to fetch movie ${id}: ${res.status}`);

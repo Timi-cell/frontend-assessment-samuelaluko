@@ -114,7 +114,7 @@ export default async function MovieDetailPage({
             </p>
           )}
 
-          <div className="flex flex-wrap gap-4 text-sm text-gray-400 mb-4">
+          <div className="flex flex-wrap gap-4 text-sm text-gray-300 mb-4">
             <span className="flex items-center gap-2">
               <CalendarDays width={15} height={15} color="blue" />
               {getReleaseYear(movie.release_date)}
@@ -142,7 +142,7 @@ export default async function MovieDetailPage({
             ))}
           </div>
 
-          <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
+          <p className="text-gray-200 leading-relaxed">{movie.overview}</p>
         </div>
       </div>
 

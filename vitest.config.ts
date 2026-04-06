@@ -8,6 +8,14 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./__tests__/setup.ts"],
+    coverage:{
+      provider:"v8",
+      reporter:["text","html"],
+      include:[
+        "./components/MovieCard/**",
+        "./hooks/useDebounce.ts"
+      ]
+    }
   },
   resolve: {
     alias: { "@": resolve(__dirname, "./") },

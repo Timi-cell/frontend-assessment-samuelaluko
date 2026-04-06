@@ -9,7 +9,7 @@ export default function Breadcrumb({ crumbs }: { crumbs: Crumb[] }) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center gap-2 text-sm text-gray-400 mb-6"
+      className="flex items-center gap-2 text-sm text-gray-300 mb-6"
     >
       {crumbs.map((crumb, i) => (
         <span key={crumb.label} className="flex items-center gap-2">

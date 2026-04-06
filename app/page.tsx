@@ -53,7 +53,7 @@ export default async function HomePage({ searchParams }: PageProps) {
             <Clapperboard width={50} height={50} color="blue" /> Movie Explorer
           </h1>
         </Link>
-        <p className="text-gray-400">Discover your next favourite movie...</p>
+        <p className="text-gray-300">Discover your next favourite movie...</p>
       </div>
 
       {/* Search + Filters */}
@@ -79,7 +79,7 @@ export default async function HomePage({ searchParams }: PageProps) {
         <EmptyState query={query || "your filters"} />
       ) : (
         <>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-gray-300 mb-4">
             Under {genreName}, Movie Explorer has{" "}
             {moviesData.total_results.toLocaleString()} movies for you.
             {query && ` for "${query}"`}

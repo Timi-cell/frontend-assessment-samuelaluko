@@ -9,7 +9,7 @@ export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [input, setInput] = useState(searchParams.get("q") ?? "");
-  const debouncedInput = useDebounce(input, 305);
+  const debouncedInput = useDebounce(input, 300);
 
   useEffect(() => {
     const currentQuery = searchParams.get("q") ?? "";

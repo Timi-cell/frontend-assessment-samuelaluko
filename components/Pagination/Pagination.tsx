@@ -37,7 +37,7 @@ export default function Pagination({
         ← Prev
       </button>
 
-      <span className="text-gray-400 text-sm">
+      <span className="text-gray-300 text-sm">
         Page <strong className="text-white">{currentPage}</strong> of{" "}
         <strong className="text-white">{capped}</strong>
       </span>

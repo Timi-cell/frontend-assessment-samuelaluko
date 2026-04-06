@@ -27,7 +27,7 @@ export default function Error({ error, reset }: ErrorProps) {
       <h1 className="text-2xl font-bold text-white mb-2">
         Something went wrong
       </h1>
-      <p className="text-gray-400 max-w-md mb-8">
+      <p className="text-gray-300 max-w-md mb-8">
         We couldn&apos;t load the movies right now. Check your network connection and try again.
       </p>
       <button

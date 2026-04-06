@@ -13,7 +13,7 @@ export default function EmptyState({ query }: EmptyStateProps) {
       <h2 className="flex items-center gap-2 text-2xl font-semibold text-gray-200 mb-2">
         No movies found <Ban width={25} height={25} color="red" />
       </h2>
-      <p className="text-gray-400 max-w-sm">
+      <p className="text-gray-300 max-w-sm">
         We couldn&apos;t find anything for{" "}
         <span className="text-white font-medium">&quot;{query}&quot;.</span> <br />
         Try a different search.
