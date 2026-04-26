@@ -51,10 +51,10 @@ export default async function HomePage({ searchParams }: PageProps) {
       <div className="mb-8">
         <Link href={"/"}>
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-            <Clapperboard width={50} height={50} color="blue" /> Movie Explorer
+            <Clapperboard width={50} height={50} color="blue" /> Movies Bank
           </h1>
         </Link>
-        <p className="text-gray-300">Discover your next favourite movie...</p>
+        <p className="text-gray-300">Discover your next favourite movie.</p>
       </div>
 
       {/* Search + Filters */}
@@ -81,13 +81,13 @@ export default async function HomePage({ searchParams }: PageProps) {
       ) : (
         <>
           <p className="text-sm text-gray-300 mb-4">
-            Under {genreName}, Movie Explorer has{" "}
+            Under {genreName}, Movies Bank has{" "}
             {formatNumber(moviesData.total_results)} movies for you.
             {/* {query && ` for "${query}"`} */}
           </p>
 
           {/* Responsive Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {movies.map((movie, index) => (
               <MovieCard
                 key={movie.id}

@@ -11,8 +11,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Movie Explorer",
-    default: "Movie Explorer",
+    template: "%s | Movies Bank",
+    default: "Movies Bank",
   },
   description: "Browse and search thousands of movies.",
   metadataBase: new URL(process.env.NEXT_BASE_URL ?? "http://localhost:3000"),
